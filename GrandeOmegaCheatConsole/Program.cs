@@ -59,9 +59,9 @@ namespace GrandeOmegaCheatConsole
             HttpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("ko", 0.2));
             HttpClient.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("pt", 0.2));
 
-            HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-            HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
-            HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("br"));
+            //HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+            //HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("deflate"));
+            //HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("br"));
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
             HttpClient.DefaultRequestHeaders.Add("DNT", "1");
 
@@ -160,7 +160,8 @@ namespace GrandeOmegaCheatConsole
             };
 
             var data = JsonConvert.SerializeObject(dictionary);
-            var loginResponse = await HttpClient.PostAsync("/api/authentication/Login", new StringContent(data, Encoding.Default, "application/json"));
+            var loginResponse = await HttpClient.PostAsync("/api/authentication/Login", new StringContent(data, Encoding.UTF8, "application/json"));
+
             var content = await loginResponse.Content.ReadAsStringAsync();
             var responseData = (dynamic)JsonConvert.DeserializeObject(content);
             if (responseData.Item1 == "none")
