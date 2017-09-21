@@ -1,0 +1,30 @@
+// Vraag goed
+POST https://grandeomega.com/api/v1/CustomAssignmentLogic/AddSuccessfulAssignment/146/27 HTTP/1.1
+Host: grandeomega.com
+Connection: keep-alive
+Content-Length: 0
+Origin: https://grandeomega.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36
+content-type: application/json
+Accept: */*
+DNT: 1
+Referer: https://grandeomega.com/my-courses/Development-1/lectures/Practicum-3
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.8,nl;q=0.6,de;q=0.4,ko;q=0.2,pt;q=0.2
+Cookie: .AspNetCore.Antiforgery.9TtSrW0hzOs=CfDJ8JlEBUC6l21Pji6Kb7yLWLwNtGUG15JvII5ikvNBiPVfk4nyzPOgo3k0LzChOhQS6NVHlQQyz6pvvh7jQUsaBRnX_KyQCth2f2aSq0roR_vq023rZih6055XoFlyejPSLOiVgUj3JWB-6HGPdG5O3EE; GrandeOmegaContext=o%2Ff94n%2FquuBMkumL6treDV1Ess0nxIgAOkewkT7zNFgbLRIzCxO7lYPRZkFG6BX4ed%2BfdqarWJ3nYSmE6Y%2BYgA%3D%3D
+
+// Vraag 20 goed attempt 1
+POST https://grandeomega.com/api/v1/CustomAssignmentLogic/AddSuccessfulAttempt/146/48 HTTP/1.1
+Host: grandeomega.com
+Connection: keep-alive
+Content-Length: 0
+Origin: https://grandeomega.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36
+content-type: application/json
+Accept: */*
+DNT: 1
+Referer: https://grandeomega.com/my-courses/Development-1/lectures/Practicum-3
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.8,nl;q=0.6,de;q=0.4,ko;q=0.2,pt;q=0.2
+Cookie: .AspNetCore.Antiforgery.9TtSrW0hzOs=CfDJ8JlEBUC6l21Pji6Kb7yLWLwNtGUG15JvII5ikvNBiPVfk4nyzPOgo3k0LzChOhQS6NVHlQQyz6pvvh7jQUsaBRnX_KyQCth2f2aSq0roR_vq023rZih6055XoFlyejPSLOiVgUj3JWB-6HGPdG5O3EE; GrandeOmegaContext=o%2Ff94n%2FquuBMkumL6treDV1Ess0nxIgAOkewkT7zNFgbLRIzCxO7lYPRZkFG6BX4ed%2BfdqarWJ3nYSmE6Y%2BYgA%3D%3D
+
