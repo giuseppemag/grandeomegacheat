@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace GrandeOmegaCheatConsole
 {
@@ -40,6 +42,7 @@ namespace GrandeOmegaCheatConsole
             Console.WriteLine("GrandeOmega Cheat created by Dennis Kievits (Alavon)");
             Console.WriteLine("Website: https://www.alavon.nl/");
             Console.WriteLine("Source of this application can be found on github at https://www.github.com/elertan/grandeomegacheat");
+            Console.WriteLine("Oh and the app is input sensitive, so if you dont put in numbers when asked it will crash for example, to lazy to check for valid input!");
             Console.WriteLine("\n\n");
             Console.WriteLine("Receiving Anti Forgery Token...");
             // Receive AntiForgeryToken
@@ -113,7 +116,85 @@ namespace GrandeOmegaCheatConsole
             }
             var index2 = Convert.ToInt32(Console.ReadLine());
 
+            var teachingActivies = await GetTeachingActivies(chapters[index2 - 1].Id);
+            int loopI = 1;
+            foreach (var teachingActivity in teachingActivies)
+            {
+                if (teachingActivity.AmountOfHiddenValues == 0)
+                {
+                    Console.WriteLine($"Setting question {loopI} to success!");
+                    await SetSuccesfulAssignment(GlobalId, teachingActivity.Id);
+                }
+                else
+                {
+                    Console.WriteLine($"Question {loopI}: Creating forward assignment");
+                    var assignmentId = await CreateForwardAssignment(teachingActivity.Id);
+                    Console.WriteLine($"Question {loopI}: Getting first step");
+                    await GetFirstStep(assignmentId);
+                    for (var counter = 0; counter < teachingActivity.AmountOfHiddenValues - 1; counter++)
+                    {
+                        Console.WriteLine($"Question {loopI}: Adding question part {counter + 1}/{teachingActivity.AmountOfHiddenValues}");
+                        await AddSuccessfulAttempt(GlobalId, teachingActivity.Id);
+                    }
+                    Console.WriteLine($"Question {loopI}: Finalizing question {teachingActivity.AmountOfHiddenValues}/{teachingActivity.AmountOfHiddenValues}");
+                    await SetSuccesfulAssignment(GlobalId, teachingActivity.Id);
+                }
+                loopI++;
+            }
+
+            Console.WriteLine($"Finished! Completed {loopI-1} questions");
             Console.ReadKey();
+        }
+
+        private static async Task SetSuccesfulAssignment(int chapterId, int teachingActivityId)
+        {
+            var response = await HttpClient.PostAsync(
+                $"/api/v1/CustomAssignmentLogic/AddSuccessfulAssignment/{chapterId}/{teachingActivityId}",
+                new StringContent(""));
+        }
+
+        private static async Task<int> CreateForwardAssignment(int teachingActivityId)
+        {
+            var response = await HttpClient.GetStringAsync(
+                $"/api/v1/CustomAssignmentLogic/GetOrCreateForwardAssignmentCode/{teachingActivityId}");
+            var data = (dynamic)JsonConvert.DeserializeObject(response);
+            return data.code.Id;
+        }
+
+        private static async Task GetFirstStep(int id)
+        {
+            var response = await HttpClient.GetStringAsync(
+                $"/api/v1/CustomAssignmentLogic/GetFirstStep/{id}");
+        }
+
+        private static async Task AddSuccessfulAttempt(int chapterId, int teachingActivityId)
+        {
+            var response = await HttpClient.PostAsync(
+                $"/api/v1/CustomAssignmentLogic/AddSuccessfulAttempt/{chapterId}/{teachingActivityId}",
+                new StringContent(""));
+        }
+
+        private static async Task<List<TeachingActivity>> GetTeachingActivies(int id)
+        {
+            var teachingActivities = new List<TeachingActivity>();
+
+            var content = await HttpClient.GetStringAsync("/api/v1/CustomAssignmentLogic/GetTeachingActivities/" + id);
+            var data = (dynamic)JsonConvert.DeserializeObject(content);
+            foreach (var c in data)
+            {
+                var teachingActivity = new TeachingActivity();
+                teachingActivity.Id = c.TeachingActivity.Id;
+                teachingActivity.Kind = c.TeachingActivity.Kind;
+                if (teachingActivity.Kind == "ForwardAssignment")
+                {
+                    var strValues = c.TeachingActivity.hidden_values.Value;
+                    var hiddenValues = JsonConvert.DeserializeObject(strValues);
+                    teachingActivity.AmountOfHiddenValues = hiddenValues.Count;
+                }
+                teachingActivities.Add(teachingActivity);
+            }
+
+            return teachingActivities;
         }
 
         private static async Task<List<Chapter>> GetChapters(int index)
@@ -128,6 +209,23 @@ namespace GrandeOmegaCheatConsole
                 chapter.Id = c.Chapter.Id;
                 chapter.Code = c.Chapter.Code;
                 chapters.Add(chapter);
+            }
+
+            try
+            {
+                var content2 = await HttpClient.GetStringAsync("/api/v1/CustomAssignmentLogic/LoadExams/" + index);
+                var data2 = (dynamic) JsonConvert.DeserializeObject(content2);
+                foreach (var c in data2)
+                {
+                    var chapter = new Chapter();
+                    chapter.Id = c.Chapter.Id;
+                    chapter.Code = c.Chapter.Code;
+                    chapters.Add(chapter);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Tried to add exams but failed lol :D -> " + ex.Message);
             }
 
             return chapters;
@@ -171,15 +269,14 @@ namespace GrandeOmegaCheatConsole
                 return false;
             }
             Name = $"{responseData.Item2.Name} {responseData.Item2.Surname}";
+            GlobalId = responseData.Item2.Id;
             return true;
         }
 
+        public static int GlobalId { get; set; }
+
         private static void GetPassword()
         {
-#if DEBUG
-            Password = "FetzhKzWmXE=";
-            return;
-#endif
             Console.Write("Enter password: ");
             Password = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(Password))
@@ -191,11 +288,6 @@ namespace GrandeOmegaCheatConsole
 
         private static void GetUsername()
         {
-#if DEBUG
-            Username = "0946572@hr.nl";
-            return;
-#endif
-
             Console.Write("Enter username (0900000@hr.nl): ");
             Username = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(Username))
