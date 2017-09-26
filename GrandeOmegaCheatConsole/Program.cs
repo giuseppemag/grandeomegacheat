@@ -11,6 +11,7 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+
 namespace GrandeOmegaCheatConsole
 {
     class Program
@@ -40,6 +41,7 @@ namespace GrandeOmegaCheatConsole
             HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
 
             Console.WriteLine("GrandeOmega Cheat created by Dennis Kievits (Alavon)");
+            Console.WriteLine("And extended by Gavin & Ramon");
             Console.WriteLine("Website: https://www.alavon.nl/");
             Console.WriteLine("Source of this application can be found on github at https://www.github.com/elertan/grandeomegacheat");
             Console.WriteLine("Oh and the app is input sensitive, so if you dont put in numbers when asked it will crash for example, to lazy to check for valid input!");
@@ -101,22 +103,22 @@ namespace GrandeOmegaCheatConsole
                 Console.WriteLine($"{i}) {course.Name}");
                 i++;
             }
-            var index = Convert.ToInt32(Console.ReadLine()) - 1;
+            var courseIndex = Convert.ToInt32(Console.ReadLine()) - 1;
 
             Console.WriteLine("Getting Chapters...");
-            var chapters = await GetChapters(courses[index].Id);
+            var chapters = await GetChapters(courses[courseIndex].Id);
 
             Console.WriteLine("------------------------------------");
-            Console.WriteLine($"Use a number to select a chapter of course {courses[index].Name}");
-            int i2 = 1;
+            Console.WriteLine($"Use a number to select a chapter of course {courses[courseIndex].Name}");
+            int j = 1;
             foreach (var chapter in chapters)
             {
-                Console.WriteLine($"{i2}) {chapter.Code}");
-                i2++;
+                Console.WriteLine($"{j}) {chapter.Code}");
+                j++;
             }
-            var index2 = Convert.ToInt32(Console.ReadLine());
+            var chapterIndex = Convert.ToInt32(Console.ReadLine());
 
-            var teachingActivies = await GetTeachingActivies(chapters[index2 - 1].Id);
+            var teachingActivies = await GetTeachingActivies(chapters[chapterIndex - 1].Id);
             int loopI = 1;
             foreach (var teachingActivity in teachingActivies)
             {
@@ -143,7 +145,13 @@ namespace GrandeOmegaCheatConsole
             }
 
             Console.WriteLine($"Finished! Completed {loopI-1} questions");
-            Console.ReadKey();
+            Console.WriteLine("---------------------------------------------");
+            Console.WriteLine("Would you like to do a other course? (Y/N)");
+
+            if(Console.ReadKey().Key == ConsoleKey.Y){
+                await MainPart();
+            }
+
         }
 
         private static async Task SetSuccesfulAssignment(int chapterId, int teachingActivityId)
