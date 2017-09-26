@@ -41,7 +41,7 @@ namespace GrandeOmegaCheatConsole
             HttpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
 
             Console.WriteLine("GrandeOmega Cheat created by Dennis Kievits (Alavon)");
-            Console.WriteLine("And updated by Gavin & Ramon");
+            Console.WriteLine("And extended by Gavin & Ramon");
             Console.WriteLine("Website: https://www.alavon.nl/");
             Console.WriteLine("Source of this application can be found on github at https://www.github.com/elertan/grandeomegacheat");
             Console.WriteLine("Oh and the app is input sensitive, so if you dont put in numbers when asked it will crash for example, to lazy to check for valid input!");
@@ -110,7 +110,7 @@ namespace GrandeOmegaCheatConsole
 
             Console.WriteLine("------------------------------------");
             Console.WriteLine($"Use a number to select a chapter of course {courses[courseIndex].Name}");
-            int j = 0;
+            int j = 1;
             foreach (var chapter in chapters)
             {
                 Console.WriteLine($"{j}) {chapter.Code}");
