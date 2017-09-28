@@ -1,5 +1,6 @@
 # GrandeOmega Cheat
 **BINARY FILES ARE NOT UP TO DATE, HOWEVER IT IS STILL IN A WORKING CONDITION. YOU CAN BUILD THE LATEST SOURCE YOURSELF USING THE .NET CORE SDK**
+
 Clears every question on the site!
 
 Code is written pretty poorly, but it does the job after all.
