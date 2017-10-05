@@ -2,6 +2,7 @@
 **BINARY FILES ARE NOT UP TO DATE, HOWEVER IT IS STILL IN A WORKING CONDITION. YOU CAN BUILD THE LATEST SOURCE YOURSELF USING THE .NET CORE SDK**
 
 Clears every question on the site!
+![Example](https://puu.sh/xQxRZ/fb6accdd86.png)
 
 Code is written pretty poorly, but it does the job after all.
 
