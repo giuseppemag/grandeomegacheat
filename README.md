@@ -13,4 +13,7 @@ You can check the source to see that this information is only used for receiving
 If you still don't believe this is the actual source, you can download the .NET Core SDK to build the software yourself.
 And compare the generated hashes for the binary files. A lot of work :^). But feel free to not believe me.
 
+![Login](https://puu.sh/xQxJB/8a1c389a3f.png)
+![Clearing Questions](https://puu.sh/xQxQ7/48fc005349.png)
+
 Enjoy!
