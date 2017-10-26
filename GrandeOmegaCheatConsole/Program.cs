@@ -107,18 +107,45 @@ namespace GrandeOmegaCheatConsole
 
             Console.WriteLine("Getting Chapters...");
             var chapters = await GetChapters(courses[courseIndex].Id);
+            var exams = await GetExams(courses[courseIndex].Id);
 
             Console.WriteLine("------------------------------------");
-            Console.WriteLine($"Use a number to select a chapter of course {courses[courseIndex].Name}");
+            Console.WriteLine($"Use a number to select a chapter/exam of course {courses[courseIndex].Name}");
             int j = 1;
+            Console.WriteLine("Chapters:");
             foreach (var chapter in chapters)
             {
                 Console.WriteLine($"{j}) {chapter.Code}");
                 j++;
             }
-            var chapterIndex = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Exams:");
+            foreach (var exam in exams)
+            {
+                Console.WriteLine($"{j}) {exam.Title}");
+                j++;
+            }
+            var inputIndex = Convert.ToInt32(Console.ReadLine());
 
-            var teachingActivies = await GetTeachingActivies(chapters[chapterIndex - 1].Id);
+            if (inputIndex < chapters.Count) await CheatChapter(chapters[inputIndex - 1].Id);
+            else await CheatExam(exams[inputIndex - 1].Id);
+            
+            Console.WriteLine("---------------------------------------------");
+            Console.WriteLine("Would you like to do a other course? (Y/N)");
+
+            if(Console.ReadKey().Key == ConsoleKey.Y){
+                await MainPart();
+            }
+
+        }
+
+        private static async Task CheatExam(int id)
+        {
+            Console.WriteLine("Do exam cheating...");
+        }
+
+        private static async Task CheatChapter(int id)
+        {
+            var teachingActivies = await GetTeachingActivies(id);
             int loopI = 1;
             foreach (var teachingActivity in teachingActivies)
             {
@@ -144,14 +171,7 @@ namespace GrandeOmegaCheatConsole
                 loopI++;
             }
 
-            Console.WriteLine($"Finished! Completed {loopI-1} questions");
-            Console.WriteLine("---------------------------------------------");
-            Console.WriteLine("Would you like to do a other course? (Y/N)");
-
-            if(Console.ReadKey().Key == ConsoleKey.Y){
-                await MainPart();
-            }
-
+            Console.WriteLine($"Finished! Completed {loopI - 1} questions");
         }
 
         private static async Task SetSuccesfulAssignment(int chapterId, int teachingActivityId)
@@ -219,24 +239,24 @@ namespace GrandeOmegaCheatConsole
                 chapters.Add(chapter);
             }
 
-            try
+            return chapters;
+        }
+
+        private static async Task<List<Exam>> GetExams(int index)
+        {
+            var exams = new List<Exam>();
+
+            var content2 = await HttpClient.GetStringAsync("/api/v1/CustomAssignmentLogic/LoadExams/" + index);
+            var data2 = (dynamic)JsonConvert.DeserializeObject(content2);
+            foreach (var c in data2)
             {
-                var content2 = await HttpClient.GetStringAsync("/api/v1/CustomAssignmentLogic/LoadExams/" + index);
-                var data2 = (dynamic) JsonConvert.DeserializeObject(content2);
-                foreach (var c in data2)
-                {
-                    var chapter = new Chapter();
-                    chapter.Id = c.Chapter.Id;
-                    chapter.Code = c.Chapter.Code;
-                    chapters.Add(chapter);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Tried to add exams but failed lol :D -> " + ex.Message);
+                var exam = new Exam();
+                exam.Id = c.Id;
+                exam.Title = c.Title;
+                exams.Add(exam);
             }
 
-            return chapters;
+            return exams;
         }
 
         private static async Task<List<Course>> GetCourses()
